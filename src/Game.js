@@ -1,3 +1,4 @@
+import UnitTypes from './UnitTypes';
 
 // export function observe( receive ) {
 //   setInterval( () => receive([
@@ -7,11 +8,25 @@
 // }
 
 
-let knightPosition = [1, 7];
+// let knightPosition = [1, 7];
+let gameState = {
+  units: [
+    { name: 'Infantry', type: UnitTypes.FIXTURE, qty: 10 },
+    { name: 'Dwarf', type: UnitTypes.CREATURE, qty: 10 },
+    { name: 'Elf', type: UnitTypes.CREATURE, qty: 5 },
+    { name: 'Avatar', type: UnitTypes.CREATURE, qty: 1 }
+  ],
+  placedUnits: [
+
+  ],
+  knightPosition: [1,7]
+};
+
 let observer = null;
 
 function emitChange() {
-  observer( knightPosition );
+  // observer( knightPosition );
+  observer( gameState );
 }
 
 export function observe( o ) {
@@ -24,7 +39,7 @@ export function observe( o ) {
 }
 
 export function canMoveKnight( toX, toY ) {
-  const [x, y] = knightPosition;
+  const [x, y] = gameState.knightPosition;
   const dx = toX - x;
   const dy = toY - y;
 
@@ -33,6 +48,14 @@ export function canMoveKnight( toX, toY ) {
 }
 
 export function moveKnight( toX, toY ) {
-  knightPosition = [toX, toY];
+  gameState.knightPosition = [toX, toY];
+  emitChange();
+}
+
+export function placeUnit( name, toX, toY ) {
+  for( let oneUnit of gameState.units ) {
+    if( oneUnit.name == name ) oneUnit.qty--;
+  }
+  // TODO: add to placed units
   emitChange();
 }

@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
-import UnitTypes from './UnitTypes';
 
 const style = {
   border: '1px dashed gray',
@@ -15,8 +14,12 @@ const style = {
 const unitSource = {
   beginDrag(props) {
     return {
-      name: props.name
+      name: props.name,
+      qty: props.qty
     };
+  },
+  endDrag( props, monitor, component ) {
+    console.log( monitor );
   }
 };
 
@@ -31,12 +34,12 @@ class Unit extends Component {
 
   render() {
     const { connectDragSource, isDragging } = this.props;
-    const { name, unittype } = this.props;
+    const { name, qty } = this.props;
     const opacity = isDragging ? 0.4 : 1;
 
     return connectDragSource(
       <div style={{ ...style, opacity }}>
-        {name}, {unittype}
+        {name} ({qty})
       </div>
     );
   }
@@ -47,4 +50,4 @@ Unit.propTypes = {
   isDragging: PropTypes.bool.isRequired
 };
 
-export default DragSource(UnitTypes.CREATURE, unitSource, collect)(Unit);
+export default DragSource(props => props.type, unitSource, collect)(Unit);

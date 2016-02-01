@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Square from './Square';
-import { canMoveKnight, moveKnight } from './Game';
-import { ItemTypes } from './Constants';
+import { canMoveKnight, moveKnight, placeUnit } from './Game';
+import UnitTypes from './UnitTypes';
 import { DropTarget} from 'react-dnd';
 
 const squareTarget = {
@@ -10,7 +10,31 @@ const squareTarget = {
   },
 
   drop( props, monitor ) {
-    moveKnight( props.x, props.y );
+    // moveKnight( props.x, props.y );
+    let unitName = monitor.getItem().name;
+    placeUnit( unitName, props.x, props.y );
+
+    console.log("DROP")
+    console.log( props );
+    console.log( monitor.getItem() );
+    console.log( monitor.getItemType() );
+    // canDrop()
+    // didDrop()
+    // getClientOffset()
+    // getDifferenceFromInitialOffset()
+    // getDropResult()
+    // getInitialClientOffset()
+    // getInitialSourceClientOffset()
+    // getItem()
+    // getItemType()
+    // getSourceClientOffset()
+    // isOver(options)
+    // receiveHandlerId(targetId)
+
+    // TODO: change the (Container) state:
+    // Game emits change that item of type X was dropped
+    // ...handleChange in container updates the state accordingly....
+    // ...Unit component should then get updated props?
   }
 };
 
@@ -66,4 +90,5 @@ BoardSquare.propTypes = {
   canDrop: PropTypes.bool.isRequired
 }
 
-export default DropTarget( ItemTypes.KNIGHT, squareTarget, collect)(BoardSquare);
+export default DropTarget(
+  [UnitTypes.FIXTURE, UnitTypes.CREATURE], squareTarget, collect)(BoardSquare);

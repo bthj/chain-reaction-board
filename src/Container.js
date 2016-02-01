@@ -11,28 +11,52 @@ class Container extends Component {
     super(props);
     this.state = {
       units: [
-        // { name: 'Infantry', unittype: UnitTypes.FIXTURE, qty: 10 },
-        { name: 'Dwarf', unittype: UnitTypes.CREATURE, qty: 1 },
-        { name: 'Elf', unittype: UnitTypes.CREATURE, qty: 1 },
-        { name: 'Avatar', unittype: UnitTypes.CREATURE, qty: 1 }
+        { name: 'Infantry', type: UnitTypes.FIXTURE, qty: 10 },
+        { name: 'Dwarf', type: UnitTypes.CREATURE, qty: 10 },
+        { name: 'Elf', type: UnitTypes.CREATURE, qty: 5 },
+        { name: 'Avatar', type: UnitTypes.CREATURE, qty: 1 }
       ],
       knightPosition: [1,7]
     };
+  }
 
+  componentDidMount() {
     // see: https://github.com/gaearon/react-dnd/blob/master/examples/00%20Chessboard/Tutorial%20App/index.js
-    // this.unobserver = observe( this.handleChange.bind(this) );
+    this.unobserver = observe( this.handleChange.bind(this) );
   }
 
   // see: https://github.com/gaearon/react-dnd/blob/master/examples/00%20Chessboard/Tutorial%20App/index.js
-  // handleChange(knightPosition) {
-  //
-  //
-  //   const nextState = { knightPosition };
-  //   if (this.state) {
-  //     this.setState(nextState);
-  //   } else {
-  //     this.state = nextState;
+  handleChange( gameState /*knightPosition*/) {
+    // const nextState = { knightPosition };
+    // if (this.state) {
+    //   this.setState(nextState);
+    // } else { // TODO: should never be called now...
+    //   this.state = nextState;
+    // }
+    if( this.state ) {
+      this.setState( gameState );
+    } else {
+      this.state = gameState;
+    }
+  }
+
+  handleUnitPlaced( name, position ) {
+    let unplacedUnits = decrementUnitQty( name );
+    if( ! unplacedUnits ) {
+      // TODO: no units left to place, let's start the game
+    }
+  }
+
+  // decrementUnitQty( name ){
+  //   let unitsLeftToPlace = 0;
+  //   for( let oneUnit of this.state.units ) {
+  //     if( oneUnit.name == name ) oneUnit.qty--;
+  //     unitsLeftToPlace += oneUnit.qty;
   //   }
+  //   if( this.state ) {
+  //     this.setState( this.state.units );
+  //   }
+  //   return unitsLeftToPlace;
   // }
 
   isDropped( name, index ) { // TODO: change method signature
@@ -56,10 +80,11 @@ class Container extends Component {
           <Board knightPosition={knightPosition} />
         </div>
         <div style={{ overflow: 'hidden', clears: 'both' }}>
-          {units.map( ({name, unittype, qty}, index ) =>
+          {units.map( ({name, type, qty}, index ) =>
             <Unit name={name}
-                  unittype={unittype}
+                  type={type}
                   isDropped={ this.isDropped(name, index) }  // vantar uppá; hringa yfir units, og nested qty
+                  qty={qty}
                   key={index} />
           )}
         </div>
