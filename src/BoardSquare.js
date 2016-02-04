@@ -1,23 +1,28 @@
 import React, { Component, PropTypes } from 'react';
 import Square from './Square';
 import { canMoveKnight, moveKnight, placeUnit } from './Game';
+import { ItemTypes } from './Constants';
 import UnitTypes from './UnitTypes';
 import { DropTarget} from 'react-dnd';
 
 const squareTarget = {
   canDrop( props ) {
+    console.log( "canDrop");
     return canMoveKnight( props.x, props.y );
   },
 
   drop( props, monitor ) {
     // moveKnight( props.x, props.y );
     let unitName = monitor.getItem().name;
-    placeUnit( unitName, props.x, props.y );
+    let unitType = monitor.getItemType();
+    let posTo = {x:props.x, y:props.y};
+    let posFrom = {x:monitor.getItem().x, y:monitor.getItem().y};
+    placeUnit( unitName, unitType, posTo, posFrom );
 
-    console.log("DROP")
-    console.log( props );
-    console.log( monitor.getItem() );
-    console.log( monitor.getItemType() );
+    // console.log("DROP")
+    // console.log( props );
+    // console.log( monitor.getItem() ); // returned in unitSource.beginDrag of Unit
+    // console.log( monitor.getItemType() );
     // canDrop()
     // didDrop()
     // getClientOffset()
@@ -91,4 +96,4 @@ BoardSquare.propTypes = {
 }
 
 export default DropTarget(
-  [UnitTypes.FIXTURE, UnitTypes.CREATURE], squareTarget, collect)(BoardSquare);
+  [UnitTypes.FIXTURE, UnitTypes.CREATURE, ItemTypes.KNIGHT], squareTarget, collect)(BoardSquare);

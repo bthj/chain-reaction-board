@@ -59,9 +59,9 @@ class Container extends Component {
   //   return unitsLeftToPlace;
   // }
 
-  isDropped( name, index ) { // TODO: change method signature
-    return false;
-  }
+  // isDropped( name, index ) { // TODO: change method signature
+  //   return false;
+  // }
 
   // renderBoard( knightPosition ) {
   //   console.log("renderBoard");
@@ -72,18 +72,21 @@ class Container extends Component {
 
   render() {
     const { units } = this.state;
-    const { knightPosition } = this.state;
+    const { knightPosition, placedUnits, squaresToPow2 } = this.state;
 
     return (
       <div>
         <div style={{ overflow: 'hidden', clears: 'both' }}>
-          <Board knightPosition={knightPosition} />
+          <Board
+            knightPosition={knightPosition}
+            placedUnits={placedUnits}
+            squaresToPow2={squaresToPow2} />
         </div>
         <div style={{ overflow: 'hidden', clears: 'both' }}>
           {units.map( ({name, type, qty}, index ) =>
             <Unit name={name}
                   type={type}
-                  isDropped={ this.isDropped(name, index) }  // vantar uppá; hringa yfir units, og nested qty
+                  // isDropped={ this.isDropped(name, index) }  // vantar uppá; hringa yfir units, og nested qty
                   qty={qty}
                   key={index} />
           )}

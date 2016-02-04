@@ -10,15 +10,14 @@ import UnitTypes from './UnitTypes';
 
 // let knightPosition = [1, 7];
 let gameState = {
+  squaresToPow2: 8,
   units: [
     { name: 'Infantry', type: UnitTypes.FIXTURE, qty: 10 },
     { name: 'Dwarf', type: UnitTypes.CREATURE, qty: 10 },
     { name: 'Elf', type: UnitTypes.CREATURE, qty: 5 },
     { name: 'Avatar', type: UnitTypes.CREATURE, qty: 1 }
   ],
-  placedUnits: [
-
-  ],
+  placedUnits: {},
   knightPosition: [1,7]
 };
 
@@ -43,8 +42,9 @@ export function canMoveKnight( toX, toY ) {
   const dx = toX - x;
   const dy = toY - y;
 
-  return ( Math.abs(dx) === 2 && Math.abs(dy) === 1) ||
-          (Math.abs(dx) === 1 && Math.abs(dy) === 2);
+  // return ( Math.abs(dx) === 2 && Math.abs(dy) === 1) ||
+  //         (Math.abs(dx) === 1 && Math.abs(dy) === 2);
+  return ! gameState.placedUnits[ toY * gameState.squaresToPow2 + toX ];
 }
 
 export function moveKnight( toX, toY ) {
@@ -52,10 +52,17 @@ export function moveKnight( toX, toY ) {
   emitChange();
 }
 
-export function placeUnit( name, toX, toY ) {
+export function placeUnit( name, type, posTo, posFrom ) {
   for( let oneUnit of gameState.units ) {
     if( oneUnit.name == name ) oneUnit.qty--;
   }
-  // TODO: add to placed units
+  // add to placed units
+  gameState.placedUnits[ posTo.y * gameState.squaresToPow2 + posTo.x ] = {
+    name: name, type: type
+  };
+  if( posFrom.x && posFrom.y ) {
+    // we were moving the unit from another square on the board
+    delete gameState.placedUnits[ posFrom.y * gameState.squaresToPow2 + posFrom.x ];
+  }
   emitChange();
 }

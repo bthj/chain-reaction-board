@@ -3,6 +3,7 @@ import Square from './Square';
 import Knight from './Knight';
 // import { canMoveKnight, moveKnight } from './Game';
 import BoardSquare from './BoardSquare';
+import Unit from './Unit';
 
 // import { DragDropContext } from 'react-dnd';
 // import HTML5Backend from 'react-dnd-html5-backend';
@@ -10,11 +11,12 @@ import BoardSquare from './BoardSquare';
 export default class Board extends Component {
   // onClick={() => this.handleSquareClick(x, y)}
   renderSquare( i ) {
-    const x = i % 8;
-    const y = Math.floor( i / 8 );
+    const x = i % this.props.squaresToPow2;
+    const y = Math.floor( i / this.props.squaresToPow2 );
+    const whPercntage = 1 / this.props.squaresToPow2 * 100;
     return (
       <div key={i}
-            style={{ width: '12.5%', height: '12.5%' }}>
+            style={{ width: whPercntage+'%', height: whPercntage+'%' }}>
         <BoardSquare x={x}
                       y={y}>
           {this.renderPiece(x, y)}
@@ -24,9 +26,19 @@ export default class Board extends Component {
   }
 
   renderPiece( x, y ) {
-    const [knightX, knightY] = this.props.knightPosition;
-    if (x === knightX && y === knightY) {
-      return <Knight />;
+    // const [knightX, knightY] = this.props.knightPosition;
+    // if (x === knightX && y === knightY) {
+    //   return <Knight />;
+    // }
+    let placedUnit = this.props.placedUnits[ y * this.props.squaresToPow2 + x ];
+    if( placedUnit ) {
+      console.log( "placed unit at x: " + x + ", y: " + y + ", named: " + placedUnit.name + ", type: " + placedUnit.type);
+      return <Unit
+        name={placedUnit.name}
+        type={placedUnit.type}
+        x={x}
+        y={y} />
+      // return <Knight />
     }
   }
 
@@ -38,7 +50,7 @@ export default class Board extends Component {
 
   render() {
     const squares = [];
-    for( let i = 0; i < 64; i++ ) {
+    for( let i = 0; i < Math.pow(this.props.squaresToPow2, 2); i++ ) {
 
       squares.push( this.renderSquare(i) );
     }
