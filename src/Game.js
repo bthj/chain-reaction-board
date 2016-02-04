@@ -37,14 +37,36 @@ export function observe( o ) {
   emitChange();
 }
 
-export function canMoveKnight( toX, toY ) {
-  const [x, y] = gameState.knightPosition;
-  const dx = toX - x;
-  const dy = toY - y;
+// export function canMoveKnight( toX, toY ) {
+//   const [x, y] = gameState.knightPosition;
+//   const dx = toX - x;
+//   const dy = toY - y;
+//
+//   return ( Math.abs(dx) === 2 && Math.abs(dy) === 1) ||
+//           (Math.abs(dx) === 1 && Math.abs(dy) === 2);
+// }
 
-  // return ( Math.abs(dx) === 2 && Math.abs(dy) === 1) ||
-  //         (Math.abs(dx) === 1 && Math.abs(dy) === 2);
-  return ! gameState.placedUnits[ toY * gameState.squaresToPow2 + toX ];
+export function canMoveUnit( toX, toY ) {
+  const toBoardIndex = toY * gameState.squaresToPow2 + toX
+  const toAndSurroundingBoardIndices = [toBoardIndex];
+  toAndSurroundingBoardIndices.push(
+    toBoardIndex - 1, toBoardIndex + 1,
+    toBoardIndex - gameState.squaresToPow2,
+      toBoardIndex - gameState.squaresToPow2 - 1,
+      toBoardIndex - gameState.squaresToPow2 + 1,
+    toBoardIndex + gameState.squaresToPow2,
+      toBoardIndex + gameState.squaresToPow2 - 1,
+      toBoardIndex + gameState.squaresToPow2 + 1
+  );
+  let canMove = true;
+  toAndSurroundingBoardIndices.some( function(oneBoardIndex){
+    if( gameState.placedUnits[oneBoardIndex] ) {
+      // a unit is placed on one of the squares that should be empty
+      canMove = false;
+      return true;
+    }
+  });
+  return canMove;
 }
 
 export function moveKnight( toX, toY ) {
@@ -54,7 +76,7 @@ export function moveKnight( toX, toY ) {
 
 export function placeUnit( name, type, posTo, posFrom ) {
   for( let oneUnit of gameState.units ) {
-    if( oneUnit.name == name ) oneUnit.qty--;
+    if( oneUnit.name == name && !posFrom.x && !posFrom.y ) oneUnit.qty--;
   }
   // add to placed units
   gameState.placedUnits[ posTo.y * gameState.squaresToPow2 + posTo.x ] = {
