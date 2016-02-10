@@ -5,9 +5,27 @@ import { ItemTypes } from './Constants';
 import UnitTypes from './UnitTypes';
 import { DropTarget} from 'react-dnd';
 
+function getPosTo( props ) {
+  return {x:props.x, y:props.y};
+}
+function getPosFrom( monitor ) {
+  let posFrom;
+  if( monitor.getItem().x && monitor.getItem().y ) {
+    posFrom = {x:monitor.getItem().x, y:monitor.getItem().y};
+  }
+  return posFrom;
+}
+
 const squareTarget = {
-  canDrop( props ) {
-    return canMoveUnit( props.x, props.y );
+
+  canDrop( props, monitor ) {
+    // console.log( "canDrop monitor ");
+    // console.log( monitor );
+    // console.log( "-----");
+    // console.log( getPosTo(props) );
+    // console.log( getPosFrom(monitor) );
+    // console.log( "-----");
+    return canMoveUnit( getPosTo(props), getPosFrom(monitor) );
   },
 
   drop( props, monitor ) {
@@ -16,7 +34,7 @@ const squareTarget = {
     let unitType = monitor.getItemType();
     let posTo = {x:props.x, y:props.y};
     let posFrom = {x:monitor.getItem().x, y:monitor.getItem().y};
-    placeUnit( unitName, unitType, posTo, posFrom );
+    placeUnit( unitName, unitType, getPosTo(props), getPosFrom(monitor) );
 
     // console.log("DROP")
     // console.log( props );

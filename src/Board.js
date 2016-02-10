@@ -30,7 +30,7 @@ export default class Board extends Component {
     // if (x === knightX && y === knightY) {
     //   return <Knight />;
     // }
-    let placedUnit = this.props.placedUnits[ y * this.props.squaresToPow2 + x ];
+    let placedUnit = this.props.placedUnits[x] ? this.props.placedUnits[x][y] : undefined;
     if( placedUnit ) {
       console.log( "placed unit at x: " + x + ", y: " + y + ", named: " + placedUnit.name + ", type: " + placedUnit.type);
       return <Unit

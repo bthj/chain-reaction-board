@@ -14,20 +14,24 @@ const style = {
 const unitSource = {
   beginDrag(props) {
     // console.log( "Unit render" );
+    // console.log( props );
     // console.log( props.name );
     // console.log( props.qty );
     // console.log( props.type );
     return { // will be available in monitor.getItem() in drop(...) (in BoardSquare.squareTarget)
       name: props.name,
       qty: props.qty,
-      // TODO: return x y pos here?  shoud I know?
+      // TODO: return x y pos here?  should I know?
         //...to indicate if moving from another square pos
       x: props.x,
       y: props.y
     };
   },
   endDrag( props, monitor, component ) {
-    // console.log( monitor );
+    return {
+      x: props.x,
+      y: props.y
+    };
   }
 };
 
